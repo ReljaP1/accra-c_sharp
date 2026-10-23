@@ -1,0 +1,28 @@
+[project]
+name = "accra-csharp"
+version = "0.1.0"
+description = "C# plugin for ACCRa."
+readme = "README.txt"
+requires-python = ">=3.12"
+dependencies = [
+    "accra-language",
+]
+
+[project.scripts]
+accra-csharp = "accra_csharp:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.sources]
+accra-language = { git = "https://github.com/rumenmitov/accra-language" }
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.9",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

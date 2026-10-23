@@ -1,0 +1,642 @@
+[
+  {
+    "name": "anima",
+    "article": "Anima: adaptive and personalized text prediction for software keyboards, arXiv:1506.04800",
+    "repository": "https://github.com/le4ker/anima",
+    "revision": "",
+    "projects": [
+      "PredictionEngine"
+    ],
+    "source": "PredictionEngine/Statistics.cs",
+    "syntax": "public class Statistics",
+    "library": "PredictionEngine.exe"
+  },
+  {
+    "name": "autoactive",
+    "article": "The AutoActive Research Environment, JOSS",
+    "repository": "https://github.com/SINTEF/AutoActive-ActivityPresenter",
+    "revision": "",
+    "projects": [
+      "UI/UI"
+    ],
+    "source": "UI/UI/App.xaml.cs",
+    "syntax": "public partial class App",
+    "library": "SINTEF.AutoActive.FileSystem.dll"
+  },
+  {
+    "name": "bio",
+    "article": "Microsoft Biology Foundation, .NET Bio",
+    "repository": "https://github.com/dotnetbio/bio",
+    "revision": "",
+    "projects": [
+      "Source/Bio.Core"
+    ],
+    "source": "Source/Bio.Core/FastQFormatType.cs",
+    "syntax": "public enum FastQFormatType",
+    "library": "Bio.Core.dll"
+  },
+  {
+    "name": "c5",
+    "article": "Kokholm and Sestoft, The C5 Generic Collection Library for C# and CLI, ITU Technical Report 2006",
+    "repository": "https://github.com/sestoft/C5",
+    "revision": "",
+    "projects": [
+      "C5"
+    ],
+    "source": "C5/WrappedArray.cs",
+    "syntax": "public class WrappedArray<T>",
+    "library": "C5.dll"
+  },
+  {
+    "name": "cdt",
+    "article": "Shewchuk, Constrained Delaunay triangulation; C# port CDT.NET",
+    "repository": "https://github.com/MichaCo/CDT.NET",
+    "revision": "",
+    "projects": [
+      "src/CDT.Core"
+    ],
+    "source": "src/CDT.Core/Triangulation.cs",
+    "syntax": "public class TriangulationException",
+    "library": "CDT.Core.dll"
+  },
+  {
+    "name": "clipper2",
+    "article": "Johnson, Clipper2, an implementation of Vatti polygon clipping, Communications of the ACM 1992",
+    "repository": "https://github.com/AngusJohnson/Clipper2",
+    "revision": "",
+    "projects": [
+      "CSharp/Clipper2Lib"
+    ],
+    "source": "CSharp/Clipper2Lib/Clipper.Offset.cs",
+    "syntax": "public enum JoinType",
+    "library": "Clipper2Lib.dll"
+  },
+  {
+    "name": "colourful",
+    "article": "Pazourek, Colourful, a .NET library for CIE colorimetry",
+    "repository": "https://github.com/tompazourek/Colourful",
+    "revision": "",
+    "projects": [
+      "src/Colourful"
+    ],
+    "source": "src/Colourful/Difference/IColorDifference.cs",
+    "syntax": "public interface IColorDifference<TColor>",
+    "library": "Colourful.dll"
+  },
+  {
+    "name": "dafny",
+    "article": "Leino, Dafny: An Automatic Program Verifier for Functional Correctness, Lecture Notes in Computer Science, 2010",
+    "repository": "https://github.com/dafny-lang/dafny",
+    "revision": "",
+    "projects": [
+      "Source/XUnitExtensions"
+    ],
+    "source": "Source/XUnitExtensions/AssertWithDiff.cs",
+    "syntax": "public class AssertWithDiff",
+    "doi": "10.1007/978-3-642-17511-4_20",
+    "library": "Validation.dll"
+  },
+  {
+    "name": "earcut",
+    "article": "Eberly, Triangulation by Ear Clipping; C# port Earcut.NET",
+    "repository": "https://github.com/MichaCo/Earcut",
+    "revision": "",
+    "projects": [
+      "src/Earcut"
+    ],
+    "source": "src/Earcut/Earcut.cs",
+    "syntax": "public static class Earcut",
+    "library": "Earcut.dll"
+  },
+  {
+    "name": "encog",
+    "article": "Heaton, Encog: Library of Interchangeable Machine Learning Models for Java and C#, JMLR 2015",
+    "repository": "https://github.com/jeffheaton/encog-dotnet-core",
+    "revision": "master",
+    "projects": [
+      "encog-core-cs"
+    ],
+    "source": "encog-core-cs/EncogFramework.cs",
+    "syntax": "class EncogFramework",
+    "doi": "10.5555/2789272.2886795",
+    "library": "encog-core-cs.dll"
+  },
+  {
+    "name": "fasta",
+    "article": "Pearson and Lipman, Improved tools for biological sequence comparison, Proceedings of the National Academy of Sciences, 1988",
+    "repository": "https://github.com/Xyaneon/Xyaneon.Bioinformatics.FASTA",
+    "revision": "",
+    "projects": [
+      "Xyaneon.Bioinformatics.FASTA"
+    ],
+    "source": "Xyaneon.Bioinformatics.FASTA/Header.cs",
+    "syntax": "public sealed class Header",
+    "doi": "10.1073/pnas.85.8.2444",
+    "library": "Xyaneon.Bioinformatics.FASTA.dll"
+  },
+  {
+    "name": "faster",
+    "article": "Chandramouli et al., FASTER, Proceedings of the 2018 International Conference on Management of Data, 2018",
+    "repository": "https://github.com/microsoft/FASTER",
+    "revision": "",
+    "projects": [
+      "cs/src/core"
+    ],
+    "source": "cs/src/core/Allocator/ScanIteratorBase.cs",
+    "syntax": "public abstract class ScanIteratorBase",
+    "doi": "10.1145/3183713.3196898",
+    "library": "FASTER.common.dll"
+  },
+  {
+    "name": "floorplans",
+    "article": "Mays, Real-time Procedural Generation of Building Floor Plans",
+    "repository": "https://github.com/rohvani/Research",
+    "revision": "",
+    "projects": [
+      "."
+    ],
+    "source": "DataStructures/Graph.cs",
+    "syntax": "public class Graph",
+    "library": "RTFP.exe"
+  },
+  {
+    "name": "graphengine",
+    "article": "Shao et al., Trinity, Proceedings of the 2013 ACM SIGMOD International Conference on Management of Data, 2013",
+    "repository": "https://github.com/microsoft/GraphEngine",
+    "revision": "",
+    "projects": [
+      "src/Trinity.Core"
+    ],
+    "source": "src/Trinity.Core/Storage/IStorage.cs",
+    "syntax": "public unsafe interface IStorage",
+    "doi": "10.1145/2463676.2467799",
+    "library": "Trinity.Core.dll"
+  },
+  {
+    "name": "gshark",
+    "article": "G-Shark, an open-source NURBS geometry library for computational design",
+    "repository": "https://github.com/GSharker/G-Shark",
+    "revision": "",
+    "projects": [
+      "src/GShark"
+    ],
+    "source": "src/GShark/Modify/Curve.cs",
+    "syntax": "public static class Curve",
+    "library": "GShark.dll"
+  },
+  {
+    "name": "hashedwheel",
+    "article": "Varghese and Lauck, Hashed and hierarchical timing wheels, IEEE/ACM Transactions on Networking 1997",
+    "repository": "https://github.com/rmacdonaldsmith/HashedWheelTimer",
+    "revision": "",
+    "projects": [
+      "src/HashedWheelTimer"
+    ],
+    "source": "src/HashedWheelTimer/ICancellable.cs",
+    "syntax": "public interface ICancellable",
+    "library": "HashedWheelTimers.dll"
+  },
+  {
+    "name": "infer",
+    "article": "Minka et al., Infer.NET 0.3, Microsoft Research Cambridge, 2018",
+    "repository": "https://github.com/dotnet/infer",
+    "revision": "v0.3.2102.1701",
+    "projects": [
+      "src/Runtime",
+      "src/Compiler"
+    ],
+    "source": "src/Compiler/Infer/Models/InferenceEngine.cs",
+    "syntax": "public class InferenceEngine : SettableTo<InferenceEngine>"
+  },
+  {
+    "name": "kernelmemory",
+    "article": "Microsoft Research, Kernel Memory",
+    "repository": "https://github.com/microsoft/kernel-memory",
+    "revision": "",
+    "projects": [
+      "archived/v2/src/Core"
+    ],
+    "source": "archived/v2/src/Core/Constants.cs",
+    "syntax": "public static class Constants",
+    "library": "KernelMemory.Core.dll"
+  },
+  {
+    "name": "keywordextract",
+    "article": "Matsuo and Ishizuka, Keyword extraction from a single document, International Journal on Artificial Intelligence Tools 2004",
+    "repository": "https://github.com/GomesNayagam/keyword-extraction-single-document",
+    "revision": "",
+    "projects": [
+      "SemanticLibrary"
+    ],
+    "source": "SemanticLibrary/Keyword.cs",
+    "syntax": "public class KeywordAnalysis",
+    "library": "SemanticLibrary.dll"
+  },
+  {
+    "name": "libiada",
+    "article": "Libiada: interval analysis of large data arrays",
+    "repository": "https://github.com/intervals-mining-lab/libiada-core",
+    "revision": "",
+    "projects": [
+      "Libiada.Core"
+    ],
+    "source": "Libiada.Core/Images/ImageResizer.cs",
+    "syntax": "public class ImageResizer",
+    "library": "Libiada.Core.dll"
+  },
+  {
+    "name": "libtess",
+    "article": "Mononen and Speps, LibTessDotNet, a port of the GLU tessellator",
+    "repository": "https://github.com/speps/LibTessDotNet",
+    "revision": "",
+    "projects": [
+      "LibTessDotNet"
+    ],
+    "source": "LibTessDotNet/Sources/Tess.cs",
+    "syntax": "public enum WindingRule",
+    "library": "LibTessDotNet.dll"
+  },
+  {
+    "name": "mathnet",
+    "article": "Ruegg, Cuda, and Van Gael, Math.NET Numerics",
+    "repository": "https://github.com/mathnet/mathnet-numerics",
+    "revision": "v5.0.0",
+    "projects": [
+      "src/Numerics"
+    ],
+    "source": "src/Numerics/LinearAlgebra/Matrix.cs",
+    "syntax": "public abstract partial class Matrix<T>"
+  },
+  {
+    "name": "metamorpheus",
+    "article": "Solntsev et al., Enhanced Global Post-translational Modification Discovery with MetaMorpheus, Journal of Proteome Research, 2018",
+    "repository": "https://github.com/smith-chem-wisc/MetaMorpheus",
+    "revision": "",
+    "projects": [
+      "MetaMorpheus/EngineLayer"
+    ],
+    "source": "MetaMorpheus/EngineLayer/Ms2ScanWithSpecificMass.cs",
+    "syntax": "public class Ms2ScanWithSpecificMass",
+    "doi": "10.1021/acs.jproteome.7b00873",
+    "library": "EngineLayer.dll"
+  },
+  {
+    "name": "metanumerics",
+    "article": "Wright, Meta.Numerics",
+    "repository": "https://github.com/dcwuser/metanumerics",
+    "revision": "",
+    "projects": [
+      "Numerics"
+    ],
+    "source": "Numerics/Matrices/AnyVector.cs",
+    "syntax": "public abstract class AnyVector",
+    "library": "Meta.Numerics.dll"
+  },
+  {
+    "name": "mlnet",
+    "article": "Ahmed et al., Machine Learning at Microsoft with ML.NET, Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining, 2019",
+    "repository": "https://github.com/dotnet/machinelearning",
+    "revision": "v4.0.2",
+    "projects": [
+      "src/Microsoft.ML.DataView"
+    ],
+    "source": "src/Microsoft.ML.DataView/IDataView.cs",
+    "syntax": "public interface IDataView",
+    "doi": "10.1145/3292500.3330667"
+  },
+  {
+    "name": "msagl",
+    "article": "Nachmanson, Robertson, and Lee, Drawing Graphs with GLEE, Graph Drawing 2007",
+    "repository": "https://github.com/microsoft/automatic-graph-layout",
+    "revision": "",
+    "projects": [
+      "GraphLayout/MSAGL"
+    ],
+    "source": "GraphLayout/MSAGL/Core/ProgressChangedEventArgs.cs",
+    "syntax": "public class ProgressChangedEventArgs",
+    "library": "Microsoft.Msagl.dll"
+  },
+  {
+    "name": "nts",
+    "article": "Davis, NetTopologySuite, a .NET port of the JTS Topology Suite",
+    "repository": "https://github.com/NetTopologySuite/NetTopologySuite",
+    "revision": "",
+    "projects": [
+      "src/NetTopologySuite"
+    ],
+    "source": "src/NetTopologySuite/NtsGeometryServices.cs",
+    "syntax": "public class NtsGeometryServices",
+    "library": "NetTopologySuite.dll"
+  },
+  {
+    "name": "orleans",
+    "article": "Bykov et al., Orleans, Proceedings of the 2nd ACM Symposium on Cloud Computing, 2011",
+    "repository": "https://github.com/dotnet/orleans",
+    "revision": "",
+    "projects": [
+      "src/Orleans.Serialization"
+    ],
+    "source": "src/Orleans.Serialization/SerializerContext.cs",
+    "syntax": "public abstract class SerializerContext",
+    "doi": "10.1145/2038916.2038932",
+    "library": "Orleans.Serialization.dll"
+  },
+  {
+    "name": "paramoda",
+    "article": "Omidi, Schreiber, and Masoudi-Nejad, MODA: an efficient algorithm for network motif discovery in biological networks, BMC Bioinformatics 2009",
+    "repository": "https://github.com/smbadiwe/ParaMODA",
+    "revision": "",
+    "projects": [
+      "QuickGraph"
+    ],
+    "source": "QuickGraph/BidirectionalGraph.cs",
+    "syntax": "public class BidirectionalGraph<TVertex",
+    "library": "QuickGraph.dll"
+  },
+  {
+    "name": "parentage",
+    "article": "Parentage analysis using opposing homozygote counts",
+    "repository": "https://github.com/sporbarhet/ParentageAnalysisOH.NET",
+    "revision": "",
+    "projects": [
+      "ParentageAnalysis"
+    ],
+    "source": "ParentageAnalysis/ParentageAnalyzer.cs",
+    "syntax": "public class ParentageAnalyzer",
+    "library": "BitCollections.dll"
+  },
+  {
+    "name": "patat",
+    "article": "Call intake scheduling, Proceedings of PATAT 2022",
+    "repository": "https://github.com/gfpost/CallIntakeProcess",
+    "revision": "",
+    "projects": [
+      "SimulationToolServicePlanning/SimulationModel"
+    ],
+    "source": "SimulationToolServicePlanning/SimulationModel/SimulationModel.cs",
+    "syntax": "public class SimulationModel",
+    "library": "SimulationModel.dll"
+  },
+  {
+    "name": "picogk",
+    "article": "PicoGK, a compact geometry kernel for computational engineering",
+    "repository": "https://github.com/leap71/PicoGK",
+    "revision": "",
+    "projects": [
+      "."
+    ],
+    "source": "Numerics/Coordinates.cs",
+    "syntax": "public struct Spherical",
+    "library": "PicoGK.dll"
+  },
+  {
+    "name": "planguage",
+    "article": "Desai et al., P, Proceedings of the 34th ACM SIGPLAN Conference on Programming Language Design and Implementation, 2013",
+    "repository": "https://github.com/p-org/P",
+    "revision": "",
+    "projects": [
+      "Src/PChecker/CheckerCore"
+    ],
+    "source": "Src/PChecker/CheckerCore/ExhaustiveEngine.cs",
+    "syntax": "public class ExhaustiveEngine",
+    "doi": "10.1145/2491956.2462184"
+  },
+  {
+    "name": "precisecalc",
+    "article": "Boehm, Towards an API for the real numbers, Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design and Implementation, 2020",
+    "repository": "https://github.com/matarillo/PreciseCalc",
+    "revision": "",
+    "projects": [
+      "PreciseCalc"
+    ],
+    "source": "PreciseCalc/ZeroToTheZerothException.cs",
+    "syntax": "public class ZeroToTheZerothException",
+    "doi": "10.1145/3385412.3386037",
+    "library": "PreciseCalc.dll"
+  },
+  {
+    "name": "predicates",
+    "article": "Richard Shewchuk, Adaptive Precision Floating-Point Arithmetic and Fast Robust Geometric Predicates, Discrete & Computational Geometry, 1997",
+    "repository": "https://github.com/modios/robust-predicates",
+    "revision": "",
+    "projects": [
+      "src/RobustPredicates"
+    ],
+    "source": "src/RobustPredicates/Orient2D.cs",
+    "syntax": "public static class Orient2D",
+    "doi": "10.1007/PL00009321",
+    "library": "RobustPredicates.dll"
+  },
+  {
+    "name": "projnet",
+    "article": "NetTopologySuite ProjNet, a C# port of the PROJ cartographic projections library",
+    "repository": "https://github.com/NetTopologySuite/ProjNet4GeoAPI",
+    "revision": "",
+    "projects": [
+      "src/ProjNet"
+    ],
+    "source": "src/ProjNet/CoordinateSystemServices.cs",
+    "syntax": "public class CoordinateSystemServices",
+    "library": "ProjNET.dll"
+  },
+  {
+    "name": "pxreprise",
+    "article": "PXReprise: reprocessing public ProteomeXchange proteomics data",
+    "repository": "https://github.com/smith-chem-wisc/PXReprise",
+    "revision": "",
+    "projects": [
+      "src/PXReprise"
+    ],
+    "source": "src/PXReprise/Program.cs",
+    "syntax": "public static class Program",
+    "library": "BayesianEstimation.dll"
+  },
+  {
+    "name": "qlnet",
+    "article": "Ametrano and Ballabio, QuantLib, C# port QLNet",
+    "repository": "https://github.com/amaggiulli/QLNet",
+    "revision": "",
+    "projects": [
+      "src/QLNet"
+    ],
+    "source": "src/QLNet/Types.cs",
+    "syntax": "public interface IValue",
+    "library": "QLNet.dll"
+  },
+  {
+    "name": "rbush",
+    "article": "Guttman, R-trees, Proceedings of the 1984 ACM SIGMOD international conference on Management of data  - SIGMOD '84, 1984",
+    "repository": "https://github.com/viceroypenguin/RBush",
+    "revision": "",
+    "projects": [
+      "RBush"
+    ],
+    "source": "RBush/RBush.Node.cs",
+    "syntax": "public partial class RBush<T>",
+    "doi": "10.1145/602259.602266",
+    "library": "RBush.dll"
+  },
+  {
+    "name": "sharpneat",
+    "article": "Stanley and Miikkulainen, Evolving Neural Networks through Augmenting Topologies, Evolutionary Computation, 2002",
+    "repository": "https://github.com/colgreen/sharpneat",
+    "revision": "",
+    "projects": [
+      "src/SharpNeat"
+    ],
+    "source": "src/SharpNeat/IBlackBox.cs",
+    "syntax": "public interface IBlackBox<TScalar>",
+    "doi": "10.1162/106365602320169811",
+    "library": "SharpNeat.dll"
+  },
+  {
+    "name": "shs",
+    "article": "Najork, The Scalable Hyperlink Store, Microsoft Research",
+    "repository": "https://github.com/MicrosoftResearch/SHS",
+    "revision": "",
+    "projects": [
+      "Library"
+    ],
+    "source": "Library/Hash64.cs",
+    "syntax": "public class Hash64",
+    "library": "SHS.Library.dll"
+  },
+  {
+    "name": "simplex",
+    "article": "Perlin, Improving noise, Proceedings of the 29th annual conference on Computer graphics and interactive techniques, 2002",
+    "repository": "https://github.com/WardBenjamin/SimplexNoise",
+    "revision": "",
+    "projects": [
+      "SimplexNoise"
+    ],
+    "source": "SimplexNoise/Noise.cs",
+    "syntax": "public static class Noise",
+    "doi": "10.1145/566570.566636",
+    "library": "SimplexNoise.dll"
+  },
+  {
+    "name": "sortingnetworks",
+    "article": "Depth-13 Sorting Networks for 28 Channels, arXiv:2511.04107",
+    "repository": "https://github.com/jonathanpeppers/SortingNetworks",
+    "revision": "",
+    "projects": [
+      "SortingNetworks.Generators"
+    ],
+    "source": "SortingNetworks.Generators/SortingNetworkGenerator.cs",
+    "syntax": "public class SortingNetworkGenerator",
+    "library": "SortingNetworks.Generators.dll"
+  },
+  {
+    "name": "specialfunctions",
+    "article": "Liu, SpecialFunctions: A C# package of special functions for scientific computing with MATLAB-compatible API, Journal of Open Source Software, 2025",
+    "repository": "https://github.com/jake-w-liu/SpecialFunctions",
+    "revision": "v1.0.2",
+    "projects": [
+      "."
+    ],
+    "source": "src/Polynomials.cs",
+    "syntax": "public class Polynomial",
+    "doi": "10.21105/joss.08516",
+    "library": "SpecialFunctions.dll"
+  },
+  {
+    "name": "spritz",
+    "article": "Spritz: RNA-Seq analysis for sample-specific proteoform databases",
+    "repository": "https://github.com/smith-chem-wisc/Spritz",
+    "revision": "",
+    "projects": [
+      "Spritz/SpritzBackend"
+    ],
+    "source": "Spritz/SpritzBackend/SpritzOptions.cs",
+    "syntax": "public class SpritzOptions",
+    "library": "SpritzBackend.dll"
+  },
+  {
+    "name": "symdiff",
+    "article": "Lahiri, Hawblitzel, Kawaguchi, and Rebelo, SYMDIFF: A Language-Agnostic Semantic Diff Tool, CAV 2012",
+    "repository": "https://github.com/boogie-org/symdiff",
+    "revision": "",
+    "projects": [
+      "Sources/SymDiff"
+    ],
+    "source": "Sources/SymDiff/source/LiveVariablesAnalysis.cs",
+    "syntax": "public class LiveVariableAnalysis",
+    "library": "System.Security.Cryptography.ProtectedData.dll"
+  },
+  {
+    "name": "tablelayout",
+    "article": "Wu et al., Measuring the Visual Complexities of Web Pages, ACM Transactions on the Web, 2013",
+    "repository": "https://github.com/Lino5000/TableLayout",
+    "revision": "",
+    "projects": [
+      "TableLayout"
+    ],
+    "source": "TableLayout/TableLayout.cs",
+    "syntax": "public class Bounds",
+    "doi": "10.1145/2435215.2435216",
+    "library": "TableLayout.dll"
+  },
+  {
+    "name": "trill",
+    "article": "Chandramouli et al., Trill: A High-Performance Incremental Query Processor for Diverse Analytics, PVLDB 2014",
+    "repository": "https://github.com/microsoft/Trill",
+    "revision": "",
+    "projects": [
+      "Sources/Core/Microsoft.StreamProcessing"
+    ],
+    "source": "Sources/Core/Microsoft.StreamProcessing/CompoundPayloads.cs",
+    "syntax": "public struct CompoundGroupKey<TOuterKey",
+    "library": "Microsoft.StreamProcessing.Provider.dll"
+  },
+  {
+    "name": "uqi",
+    "article": "Zhou Wang and Bovik, A universal image quality index, IEEE Signal Processing Letters, 2002",
+    "repository": "https://github.com/Aandrzejmi/UniversalQualityIndex",
+    "revision": "",
+    "projects": [
+      "UniversalQualityIndex"
+    ],
+    "source": "UniversalQualityIndex/Program.cs",
+    "syntax": "public struct Window",
+    "doi": "10.1109/97.995823",
+    "library": "Microsoft.Win32.SystemEvents.dll"
+  },
+  {
+    "name": "usace-numerics",
+    "article": "Numerics: A .NET Library for Numerical Computing, Statistical Analysis, and Risk, USACE",
+    "repository": "https://github.com/USACE-RMC/Numerics",
+    "revision": "",
+    "projects": [
+      "Numerics"
+    ],
+    "source": "Numerics/Utilities/Tools.cs",
+    "syntax": "public static class Tools",
+    "library": "Numerics.dll"
+  },
+  {
+    "name": "voronoi",
+    "article": "Fortune, A sweepline algorithm for Voronoi diagrams, Algorithmica, 1987",
+    "repository": "https://github.com/IsaacGuan/Voronoi-Delaunay",
+    "revision": "",
+    "projects": [
+      "Voronoi-Delaunay"
+    ],
+    "source": "Voronoi-Delaunay/VoronoiDelaunayForm.cs",
+    "syntax": "public partial class VoronoiDelaunayForm",
+    "doi": "10.1007/BF01840357",
+    "library": "Voronoi-Delaunay.vshost.exe"
+  },
+  {
+    "name": "wcontour",
+    "article": "Wang, wContour: A .NET class library of contour-related algorithms, Computers & Geosciences, 2012",
+    "repository": "https://github.com/meteoinfo/wContour_CSharp",
+    "revision": "",
+    "projects": [
+      "."
+    ],
+    "source": "PointF.cs",
+    "syntax": "public struct PointF",
+    "doi": "10.1016/j.cageo.2011.12.003",
+    "library": "wContour.dll"
+  }
+]
