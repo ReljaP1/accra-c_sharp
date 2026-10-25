@@ -1,7 +1,6 @@
 import json
 import os
 import shlex
-from functools import cache
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -27,10 +26,6 @@ def channel_of(version: str) -> str | None:
 def channel_key(channel: str) -> tuple[int, int]:
     major, minor = channel.split(".")
     return (int(major), int(minor))
-
-
-def highest_channel(channels: set[str]) -> str:
-    return max(channels, key=channel_key)
 
 
 def portable_frameworks(frameworks: set[str]) -> set[str]:
@@ -167,30 +162,3 @@ def dockerfile_run(args: list[str]) -> DockerfileInstruction:
         else:
             rendered.append(arg)
     return DockerfileInstruction("RUN " + " ".join(rendered))
-
-
-@cache
-def docker_setup_workdir(repo: str) -> list[DockerfileInstruction]:
-    return [
-        DockerfileInstruction(f"RUN git clone {repo} /project"),
-        DockerfileInstruction("WORKDIR /project"),
-    ]
-
-
-DOCKER_CREATE_USER: list[DockerfileInstruction] = [
-    DockerfileInstruction(
-        'RUN adduser \
-                --disabled-password \
-                --gecos "" \
-                --home "/home/appuser" \
-                --shell "/bin/bash" \
-                --uid "10001" \
-                appuser'
-    )
-]
-
-
-DOCKER_SWITCH_USER: list[DockerfileInstruction] = [
-    DockerfileInstruction("RUN chown -R appuser:appuser /project"),
-    DockerfileInstruction("USER appuser"),
-]

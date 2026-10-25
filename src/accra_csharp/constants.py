@@ -2,13 +2,20 @@
 # without a Windows targeting pack. A concrete framework needs its own SDK.
 # netstandard is buildable by every channel below.
 
+# Only the host-side Docker fallback runs these images; ACCRa composes the
+# Dockerfile on its own base.
 SDK_IMAGE = "mcr.microsoft.com/dotnet/sdk"
 SDK_IMAGE_ROOT = "/usr/share/dotnet"
+# What the .NET SDK needs on a Debian host: the installer's tools, ICU, OpenSSL and zlib.
+SDK_PACKAGES = ("curl", "ca-certificates", "libicu-dev", "libssl-dev", "zlib1g-dev")
 DOTNET_INSTALL_URL = "https://dot.net/v1/dotnet-install.sh"
 DOTNET_DIR = ".dotnet"
 LTS_CHANNEL = "10.0"
 MONO_VERSION = "mono"
 MONO_IMAGE = "mono:6.12"
+# Debian bookworm's Mono (the Mono project has no bookworm repository) and its
+# nuget; xbuild stands in for msbuild.
+MONO_PACKAGES = ("mono-devel", "mono-xbuild", "ca-certificates-mono", "nuget")
 MONO_IOMAP = "all"
 # Mono has no Client profile, so the profile from an old csproj is cleared.
 MSBUILD_PROPERTIES = ("/p:Configuration=Release", "/p:TargetFrameworkProfile=")

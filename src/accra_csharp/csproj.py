@@ -56,6 +56,19 @@ class CSharpProject:
     frameworks: set[str]
     dependencies: set[Dependency]
     sdk_style: bool
+    names: frozenset[str] = frozenset()
+
+
+def _names(root: ElementTree.Element, path: Path) -> frozenset[str]:
+    """The names a project calls itself: its file stem and the assembly,
+    namespace and package names it sets."""
+    names = {path.stem}
+    for element in root.iter():
+        if local_tag(element.tag) in {"AssemblyName", "RootNamespace", "PackageId"}:
+            text = (element.text or "").strip()
+            if text and "$(" not in text:
+                names.add(text)
+    return frozenset(names)
 
 
 def _dependencies(
@@ -109,6 +122,7 @@ class Csproj(Manifest):
                     frameworks=frameworks,
                     dependencies=_dependencies(document, versions),
                     sdk_style="Sdk" in document.attrib,
+                    names=_names(document, path),
                 )
             )
         return bool(self.projects)

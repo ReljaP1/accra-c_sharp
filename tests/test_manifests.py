@@ -203,10 +203,18 @@ def test_dockerfile_records_restore_and_build(monkeypatch, tmp_path: Path):
     monkeypatch.setattr(NuGet, "_run", run)
     result = CSharp(Config(cwd=tmp_path, repo="https://example.test/app.git")).build()
     assert result.success, [error.message for error in result.errors]
-    assert (
-        result.dockerfile.pre_dependencies_installation[0]
-        == "FROM mcr.microsoft.com/dotnet/sdk:8.0"
-    )
+    steps = [str(step) for step in result.dockerfile.project_steps()]
+    pre = result.dockerfile.pre_dependencies_installation
+    assert pre[0].startswith("RUN apt-get update")
+    assert any("--channel 8.0" in step for step in pre)
+    assert not any("mono" in step for step in pre)
+    assert not [
+        step
+        for step in steps
+        if step.startswith(("FROM", "USER", "WORKDIR", "RUN git clone"))
+        or "adduser" in step
+    ]
+    assert any("NUGET_PACKAGES=/project/.nuget" in step for step in steps)
     assert (
         "RUN dotnet restore app.csproj" in result.dockerfile.dependencies_installation
     )
@@ -286,8 +294,9 @@ def test_multi_target_build_uses_every_portable_framework(monkeypatch, tmp_path:
     assert "--framework net6.0" in text
     assert "--framework net8.0" in text
     assert "app.sln" not in text
-    assert "FROM mcr.microsoft.com/dotnet/sdk:8.0" in text
+    assert "FROM" not in text
     assert "--channel 6.0" in text
+    assert "--channel 8.0" in text
 
 
 def test_old_framework_project_does_not_cancel_the_sdk_channel(tmp_path: Path):
@@ -326,3 +335,88 @@ def test_old_framework_project_selects_mono(tmp_path: Path):
     )
     nuget = NuGet(Config(cwd=tmp_path))
     assert nuget.select_language_version() == "mono"
+
+
+def test_versions_and_choice(tmp_path: Path):
+    (tmp_path / "app.csproj").write_text(
+        """
+        <Project Sdk="Microsoft.NET.Sdk">
+          <PropertyGroup><TargetFrameworks>net6.0;net8.0</TargetFrameworks></PropertyGroup>
+        </Project>
+        """,
+        encoding="utf-8",
+    )
+    manager = NuGet(Config(cwd=tmp_path))
+
+    assert manager.supported_language_versions() == {"6.0", "8.0"}
+    assert manager.select_language_version() == "8.0"
+    assert manager.ranked_language_versions() == ["8.0", "6.0"]
+    forced = NuGet(Config(cwd=tmp_path, language_version="6.0"))
+    assert forced.select_language_version() == "6.0"
+
+
+def test_version_order_prefers_the_highest_channel_then_mono(tmp_path: Path):
+    order = NuGet._version_order
+    assert order({"mono"}) == ["mono"]
+    assert order({"mono", "6.0", "10.0", "8.0"}) == ["10.0", "8.0", "6.0", "mono"]
+    manager = NuGet(Config(cwd=tmp_path))
+    assert manager.spec.version_order is not None
+    assert manager.spec.version_order({"mono", "6.0"}) == ["6.0", "mono"]
+
+
+def test_sdk_steps_install_everything_on_a_bare_debian(monkeypatch, tmp_path: Path):
+    (tmp_path / "app.csproj").write_text(
+        """
+        <Project Sdk="Microsoft.NET.Sdk">
+          <PropertyGroup><TargetFrameworks>net6.0;net8.0</TargetFrameworks></PropertyGroup>
+        </Project>
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(NuGet, "_ensure_sdks", lambda self, channels: AccraResult())
+    monkeypatch.setattr(
+        NuGet,
+        "_run",
+        lambda self, args: subprocess.CompletedProcess(args, 0, "", ""),
+    )
+
+    result = CSharp(Config(cwd=tmp_path)).build()
+
+    pre = result.dockerfile.pre_dependencies_installation
+    assert pre[0].startswith("RUN apt-get update")
+    assert "libicu-dev" in pre[0]
+    assert any("--channel 6.0" in step for step in pre)
+    assert any("--channel 8.0" in step for step in pre)
+    assert any(
+        step.startswith("ENV DOTNET_ROOT=/usr/share/dotnet PATH=") for step in pre
+    )
+    assert not any("mono" in step for step in pre)
+
+
+def test_framework_project_installs_mono_on_debian(monkeypatch, tmp_path: Path):
+    (tmp_path / "legacy.csproj").write_text(
+        """
+        <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+          <PropertyGroup>
+            <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+          </PropertyGroup>
+        </Project>
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(NuGet, "_ensure_mono", lambda self: AccraResult())
+    monkeypatch.setattr(
+        NuGet,
+        "_run",
+        lambda self, args: subprocess.CompletedProcess(args, 0, "", ""),
+    )
+
+    result = CSharp(Config(cwd=tmp_path)).build()
+
+    assert result.success, [error.message for error in result.errors]
+    pre = result.dockerfile.pre_dependencies_installation
+    assert pre[0].startswith("RUN apt-get update")
+    assert "mono-devel" in pre[0]
+    assert "RUN ln -s /usr/bin/xbuild /usr/local/bin/msbuild" in pre
+    assert "ENV MONO_IOMAP=all" in pre
+    assert not any("dotnet-install" in step for step in pre)

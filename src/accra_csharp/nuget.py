@@ -3,6 +3,7 @@ import shlex
 import shutil
 import subprocess
 import urllib.request
+from collections.abc import Set as AbstractSet
 from pathlib import Path
 from typing import override
 from urllib.error import URLError
@@ -26,10 +27,12 @@ from .constants import (
     INVARIANT_GLOBALIZATION_CHANNELS,
     MONO_IMAGE,
     MONO_IOMAP,
+    MONO_PACKAGES,
     MONO_VERSION,
     MSBUILD_PROPERTIES,
     SDK_IMAGE,
     SDK_IMAGE_ROOT,
+    SDK_PACKAGES,
     TFM_CHANNELS,
 )
 from .csproj import Csproj
@@ -38,18 +41,19 @@ from .packages_config import Packages_config
 from .packages_props import Packages_props
 from .solution import Solution
 from .utils import (
-    DOCKER_CREATE_USER,
-    DOCKER_SWITCH_USER,
     buildable_frameworks,
     channel_key,
     channel_of,
-    docker_setup_workdir,
     dockerfile_run,
-    highest_channel,
     portable_frameworks,
+    read_json,
     read_xml,
     unconstrained_channels,
 )
+
+ASSETS_FILE = "project.assets.json"
+ASSETS_SIZE_LIMIT = 2 * 1024 * 1024
+ASSETS_SKIPPED_DIRECTORIES = {".git", ".dotnet", "node_modules"}
 
 
 class NuGet(EnvironmentManager):
@@ -65,6 +69,7 @@ class NuGet(EnvironmentManager):
                 Solution(config),
             },
             config=config,
+            version_order=self._version_order,
         )
         super().__init__(spec)
         self._using_docker = False
@@ -105,7 +110,7 @@ class NuGet(EnvironmentManager):
                 cwd=config.cwd,
                 env=self._command_env(),
                 shell=config.shell,
-                timeout=config.timeout,
+                timeout=self.subprocess_timeout(),
             )
         except FileNotFoundError:
             return subprocess.CompletedProcess(
@@ -311,37 +316,56 @@ class NuGet(EnvironmentManager):
             return AccraResult()
         return self._fail("could not find Mono. Install msbuild or Docker.")
 
-    def _workdir(self) -> list[DockerfileInstruction]:
-        repo = self.spec.config.repo
-        if repo:
-            return list(docker_setup_workdir(repo))
-        return [DockerfileInstruction("WORKDIR /project")]
+    def _sdk_environment(self, channels: list[str]) -> DockerfileInstruction:
+        """The image's .NET settings: no telemetry, and the NuGet cache inside
+        the project, which the caller makes the image user's."""
+        workdir = self.spec.config.image_workdir.rstrip("/")
+        settings = [
+            "DOTNET_CLI_TELEMETRY_OPTOUT=1",
+            "DOTNET_NOLOGO=1",
+            "DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1",
+            f"NUGET_PACKAGES={workdir}/.nuget",
+        ]
+        if set(channels) & INVARIANT_GLOBALIZATION_CHANNELS:
+            settings.append("DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1")
+        return DockerfileInstruction("ENV " + " ".join(settings))
 
-    def _image_pre(
-        self, channel: str, extra_channels: list[str]
-    ) -> list[DockerfileInstruction]:
-        instructions = [DockerfileInstruction(f"FROM {SDK_IMAGE}:{channel}")]
-        instructions.extend(self._workdir())
-        for extra in extra_channels:
-            instructions.append(
-                DockerfileInstruction(
-                    "RUN curl -fsSL "
-                    f"{DOTNET_INSTALL_URL} -o /tmp/dotnet-install.sh"
-                    " && bash /tmp/dotnet-install.sh"
-                    f" --channel {extra} --install-dir {SDK_IMAGE_ROOT}"
-                )
-            )
-        instructions.extend(DOCKER_CREATE_USER)
-        return instructions
+    @staticmethod
+    def _install_channel(channel: str) -> DockerfileInstruction:
+        return DockerfileInstruction(
+            "RUN curl -fsSL "
+            f"{DOTNET_INSTALL_URL} -o /tmp/dotnet-install.sh"
+            " && bash /tmp/dotnet-install.sh"
+            f" --channel {channel} --install-dir {SDK_IMAGE_ROOT}"
+        )
 
-    def _mono_image_pre(self) -> list[DockerfileInstruction]:
-        instructions = [
-            DockerfileInstruction(f"FROM {MONO_IMAGE}"),
+    def _sdk_steps(self, channels: list[str]) -> list[DockerfileInstruction]:
+        """The steps that install the .NET SDK channels on a bare Debian base."""
+        return [
+            DockerfileInstruction(
+                "RUN apt-get update && apt-get install -y --no-install-recommends "
+                + " ".join(SDK_PACKAGES)
+                + " && rm -rf /var/lib/apt/lists/*"
+            ),
+            *(self._install_channel(channel) for channel in channels),
+            DockerfileInstruction(
+                f"ENV DOTNET_ROOT={SDK_IMAGE_ROOT} PATH={SDK_IMAGE_ROOT}:$PATH"
+            ),
+        ]
+
+    @staticmethod
+    def _mono_steps() -> list[DockerfileInstruction]:
+        """Debian's Mono, for .NET Framework projects. Debian has no msbuild
+        package, so msbuild is xbuild."""
+        return [
+            DockerfileInstruction(
+                "RUN apt-get update && apt-get install -y --no-install-recommends "
+                + " ".join(MONO_PACKAGES)
+                + " && rm -rf /var/lib/apt/lists/*"
+            ),
+            DockerfileInstruction("RUN ln -s /usr/bin/xbuild /usr/local/bin/msbuild"),
             DockerfileInstruction(f"ENV MONO_IOMAP={MONO_IOMAP}"),
         ]
-        instructions.extend(self._workdir())
-        instructions.extend(DOCKER_CREATE_USER)
-        return instructions
 
     def _projects(self) -> list:
         projects = self._manifest(Csproj)
@@ -494,19 +518,24 @@ class NuGet(EnvironmentManager):
         return None
 
     @override
-    def select_language_version(self) -> str | AccraError:
-        if self.selected_language_version:
-            return self.selected_language_version
-
+    def supported_language_versions(self) -> set[str] | AccraError:
+        """The SDK channels (or Mono) every constrained manifest allows. A
+        manifest that allows every channel does not narrow the choice."""
+        if not self.present_manifests:
+            return AccraInstallError(
+                message="could not decide on a language version: no manifest present"
+            )
         collected: list[set[str]] = []
-        for manifest in self.present_manifests:
+        for manifest in sorted(self.present_manifests, key=lambda m: m.spec.name):
             result = manifest.get_supported_language_versions()
             if isinstance(result, AccraError):
                 return result
-            collected.append(result)
-
-        if not collected:
-            return AccraInstallError(message="could not decide on a language version")
+            if not isinstance(result, AbstractSet):
+                return AccraInstallError(
+                    message=f"{manifest.spec.name} returned {type(result).__name__} "
+                    "as its supported language versions, expected a set"
+                )
+            collected.append(set(result))
 
         constrained = [
             versions for versions in collected if versions != unconstrained_channels()
@@ -514,13 +543,17 @@ class NuGet(EnvironmentManager):
         common = set.intersection(*(constrained or collected))
         if not common:
             return AccraInstallError(message="could not decide on a language version")
+        return common
 
-        numeric = {version for version in common if version != MONO_VERSION}
-        if not numeric:
-            self.selected_language_version = MONO_VERSION
-        else:
-            self.selected_language_version = highest_channel(numeric)
-        return self.selected_language_version
+    @staticmethod
+    def _version_order(versions: set[str]) -> list[str]:
+        """The highest SDK channel first; Mono only after every SDK channel."""
+        numeric = sorted(
+            (version for version in versions if version != MONO_VERSION),
+            key=channel_key,
+            reverse=True,
+        )
+        return [*numeric, *(version for version in versions if version == MONO_VERSION)]
 
     @override
     def pre_dependencies_installation(self) -> AccraResult:
@@ -529,32 +562,31 @@ class NuGet(EnvironmentManager):
         if isinstance(language_version, AccraError):
             return AccraResult(errors=[language_version], success=False)
 
+        pre = result.dockerfile.pre_dependencies_installation
         if language_version == MONO_VERSION:
             ensured = self._ensure_mono()
             if not ensured.success:
                 return ensured
             self._prepare_framework_projects()
-            result.dockerfile.pre_dependencies_installation.extend(
-                self._mono_image_pre()
-            )
+            pre.extend(self._mono_steps())
             return result
 
         channels = self._required_channels()
         ensured = self._ensure_sdks(channels)
         if not ensured.success:
             return ensured
-        if self._framework_projects():
+        framework_projects = bool(self._framework_projects())
+        if framework_projects:
             mono = self._ensure_mono()
             if not mono.success:
                 return mono
             self._prepare_framework_projects()
 
-        result.dockerfile.pre_dependencies_installation.extend(
-            self._image_pre(
-                language_version,
-                [channel for channel in channels if channel != language_version],
-            )
-        )
+        installed = list(dict.fromkeys([language_version, *channels]))
+        pre.extend(self._sdk_steps(installed))
+        if framework_projects:
+            pre.extend(self._mono_steps())
+        pre.append(self._sdk_environment(channels))
         return result
 
     @override
@@ -654,10 +686,99 @@ class NuGet(EnvironmentManager):
             if not built.success:
                 return built
             result.extend(built)
-        if (
-            result.dockerfile.dependencies_installation
-            or result.dockerfile.post_dependencies_installation
-            or result.dockerfile.pre_dependencies_installation
-        ):
-            result.dockerfile.post_dependencies_installation.extend(DOCKER_SWITCH_USER)
         return result
+
+    @override
+    def has_project_install(self) -> bool:
+        return bool(self.present_manifests)
+
+    @override
+    def install_project(self) -> AccraResult:
+        # `post_dependencies_installation` already compiled every project (the
+        # SDK's and Mono's alike), so the project is installed: no second build
+        # and no further Dockerfile lines.
+        return AccraResult()
+
+    @override
+    def project_names(self) -> set[str]:
+        """The projects' file stems, assembly names, root namespaces and
+        package ids."""
+        names: set[str] = set()
+        for project in self._projects():
+            names |= project.names
+        return names
+
+    def _assets_files(self) -> list[Path]:
+        project = self._project_dir()
+        if project is None or not project.is_dir():
+            return []
+        found: list[Path] = []
+        for directory, dirnames, filenames in os.walk(project):
+            dirnames[:] = [
+                entry for entry in dirnames if entry not in ASSETS_SKIPPED_DIRECTORIES
+            ]
+            if Path(directory).name == "obj" and ASSETS_FILE in filenames:
+                found.append(Path(directory) / ASSETS_FILE)
+        return sorted(found)
+
+    @staticmethod
+    def _restored_packages(path: Path) -> dict[str, str]:
+        """The `package` libraries of one assets file, name to version."""
+        try:
+            if path.stat().st_size > ASSETS_SIZE_LIMIT:
+                return {}
+        except OSError:
+            return {}
+        document = read_json(path)
+        libraries = document.get("libraries") if isinstance(document, dict) else None
+        if not isinstance(libraries, dict):
+            return {}
+        packages: dict[str, str] = {}
+        for key, library in libraries.items():
+            if not isinstance(library, dict) or library.get("type") != "package":
+                continue
+            name, separator, version = str(key).partition("/")
+            if name and separator and version:
+                packages[name] = version
+        return packages
+
+    @staticmethod
+    def _version_key(version: str) -> tuple[tuple[int, ...], bool, str]:
+        """Orders NuGet versions: numeric parts, a release over its prerelease."""
+        core, _, prerelease = version.split("+", 1)[0].partition("-")
+        parts = tuple(int(part) if part.isdigit() else 0 for part in core.split("."))
+        return parts, not prerelease, prerelease
+
+    @override
+    def installed_dependencies(self) -> set[Dependency] | AccraError:
+        """The NuGet packages `dotnet restore` resolved, from every
+        `obj/project.assets.json`, as exact versions (`=1.2.3`)."""
+        files = self._assets_files()
+        if not files:
+            return AccraInstallError(
+                message=f"no obj/{ASSETS_FILE}: dependencies not restored"
+            )
+        best: dict[str, tuple[str, str]] = {}
+        for path in files:
+            for name, version in self._restored_packages(path).items():
+                known = best.get(name.lower())
+                if known is None or self._version_key(version) > self._version_key(
+                    known[1]
+                ):
+                    best[name.lower()] = (name, version)
+        return {
+            Dependency(name=name, version=f"={version}")
+            for name, version in best.values()
+        }
+
+    @override
+    def is_usable(self, dependency: Dependency) -> bool | AccraError:
+        """Whether the build can use the package: one of the project's own, or
+        one the restore resolved. NuGet ids are case-insensitive."""
+        name = dependency.name.strip().lower()
+        if name in {own.lower() for own in self.project_names()}:
+            return True
+        installed = self.installed_dependencies()
+        if isinstance(installed, AccraError):
+            return installed
+        return name in {d.name.lower() for d in installed}
