@@ -689,17 +689,6 @@ class NuGet(EnvironmentManager):
         return result
 
     @override
-    def has_project_install(self) -> bool:
-        return bool(self.present_manifests)
-
-    @override
-    def install_project(self) -> AccraResult:
-        # `post_dependencies_installation` already compiled every project (the
-        # SDK's and Mono's alike), so the project is installed: no second build
-        # and no further Dockerfile lines.
-        return AccraResult()
-
-    @override
     def project_names(self) -> set[str]:
         """The projects' file stems, assembly names, root namespaces and
         package ids."""
@@ -770,15 +759,3 @@ class NuGet(EnvironmentManager):
             Dependency(name=name, version=f"={version}")
             for name, version in best.values()
         }
-
-    @override
-    def is_usable(self, dependency: Dependency) -> bool | AccraError:
-        """Whether the build can use the package: one of the project's own, or
-        one the restore resolved. NuGet ids are case-insensitive."""
-        name = dependency.name.strip().lower()
-        if name in {own.lower() for own in self.project_names()}:
-            return True
-        installed = self.installed_dependencies()
-        if isinstance(installed, AccraError):
-            return installed
-        return name in {d.name.lower() for d in installed}

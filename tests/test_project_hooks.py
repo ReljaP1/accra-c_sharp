@@ -34,16 +34,6 @@ def _manager(tmp_path: Path) -> NuGet:
     return NuGet(Config(cwd=tmp_path))
 
 
-def test_project_install_follows_the_manifests(tmp_path: Path):
-    assert not _manager(tmp_path).has_project_install()
-    _project(tmp_path)
-    manager = _manager(tmp_path)
-    assert manager.has_project_install()
-    result = manager.install_project()
-    assert result.success
-    assert not result.dockerfile.post_dependencies_installation
-
-
 def test_project_names(tmp_path: Path):
     _project(tmp_path)
     (tmp_path / "broken.csproj").write_text("<Project", encoding="utf-8")
@@ -99,21 +89,3 @@ def test_installed_dependencies_keeps_the_highest_duplicate(tmp_path: Path):
         Dependency(name="serilog", version="=3.10.0"),
         Dependency(name="Dup", version="=1.0.0"),
     }
-
-
-def test_is_usable_is_case_insensitive(tmp_path: Path):
-    project = _project(tmp_path)
-    _assets(project, {"Newtonsoft.Json/13.0.3": {"type": "package"}})
-    manager = _manager(tmp_path)
-    assert manager.is_usable(Dependency(name="newtonsoft.JSON", version=""))
-    assert manager.is_usable(Dependency(name="acme.core", version=""))
-    assert manager.is_usable(Dependency(name="Missing", version="")) is False
-
-
-def test_is_usable_without_assets_file_still_knows_own_names(tmp_path: Path):
-    _project(tmp_path)
-    manager = _manager(tmp_path)
-    assert manager.is_usable(Dependency(name="Acme", version="")) is True
-    assert isinstance(
-        manager.is_usable(Dependency(name="Other", version="")), AccraError
-    )

@@ -10,7 +10,6 @@ SDK_IMAGE_ROOT = "/usr/share/dotnet"
 SDK_PACKAGES = ("curl", "ca-certificates", "libicu-dev", "libssl-dev", "zlib1g-dev")
 DOTNET_INSTALL_URL = "https://dot.net/v1/dotnet-install.sh"
 DOTNET_DIR = ".dotnet"
-LTS_CHANNEL = "10.0"
 MONO_VERSION = "mono"
 MONO_IMAGE = "mono:6.12"
 # Debian bookworm's Mono (the Mono project has no bookworm repository) and its
