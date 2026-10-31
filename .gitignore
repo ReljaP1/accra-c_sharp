@@ -3,3 +3,6 @@
 .dotnet/
 bin/
 obj/
+
+# not tracked: a lock would pin accra-language to one commit
+uv.lock
